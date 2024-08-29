@@ -54,7 +54,7 @@ const cube = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
 
 const material = new THREE.MeshBasicMaterial({
   color: debugObject.color,
-  wireframe: false,
+  wireframe: true,
 });
 
 const mesh = new THREE.Mesh(cube, material);
@@ -84,6 +84,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 function tick() {
   renderer.render(scene, camera);
   controls.update();
+  mesh.rotation.y += 0.01;
   window.requestAnimationFrame(tick);
 }
 tick();
