@@ -31,7 +31,7 @@ const gui = new GUI({
 });
 gui.hide();
 const debugObject = {};
-debugObject.color = "#9900ff";
+debugObject.color = "#ffffff";
 
 window.addEventListener("resize", () => {
   sizes.width = window.innerWidth;
@@ -50,6 +50,16 @@ window.addEventListener("keydown", () => {
   }
 });
 
+const cube = new THREE.BoxGeometry(1, 1, 1, 2, 2, 2);
+
+const material = new THREE.MeshBasicMaterial({
+  color: debugObject.color,
+  wireframe: false,
+});
+
+const mesh = new THREE.Mesh(cube, material);
+scene.add(mesh);
+
 // Camera
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -58,10 +68,12 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 
-camera.position.z = 3;
+camera.position.set(2, 1, 1);
 
 scene.add(camera);
 
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
 // Renderer
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
@@ -71,6 +83,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
 function tick() {
   renderer.render(scene, camera);
+  controls.update();
   window.requestAnimationFrame(tick);
 }
 tick();
