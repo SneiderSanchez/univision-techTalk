@@ -29,7 +29,7 @@ const gui = new GUI({
   title: "Tech talk univision :')",
   closeFolders: true,
 });
-gui.hide();
+
 const debugObject = {};
 debugObject.color = "#ffffff";
 
@@ -60,6 +60,35 @@ const material = new THREE.MeshBasicMaterial({
 const mesh = new THREE.Mesh(cube, material);
 scene.add(mesh);
 
+gui.add(material, "wireframe");
+gui.addColor(debugObject, "color").onChange(() => {
+  material.color.set(debugObject.color);
+});
+
+debugObject.spin = () => {
+  gsap.to(mesh.rotation, { duration: 4, y: mesh.rotation.y + Math.PI * 2 });
+};
+
+debugObject.zoomIn = () => {
+  gsap.to(mesh.position, { x: 2, duration: 1, delay: 0 });
+  gsap.to(mesh.position, { x: 0, duration: 1, delay: 1.5 });
+};
+
+gui.add(debugObject, "spin");
+gui.add(debugObject, "zoomIn");
+
+debugObject.subdivision = 2;
+
+gui
+  .add(debugObject, "subdivision")
+  .min(1)
+  .max(50)
+  .step(1)
+  .onChange((value) => {
+    mesh.geometry.dispose();
+    mesh.geometry = new THREE.BoxGeometry(1, 1, 1, value, value, value);
+  });
+
 // Camera
 const camera = new THREE.PerspectiveCamera(
   75,
@@ -84,7 +113,9 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 function tick() {
   renderer.render(scene, camera);
   controls.update();
-  mesh.rotation.y += 0.01;
+  //mesh.rotation.y += 0.01;
+  camera.lookAt(mesh.position);
+  // Update objects
   window.requestAnimationFrame(tick);
 }
 tick();
